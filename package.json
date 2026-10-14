@@ -16,5 +16,8 @@
   },
   "overrides": {
     "onnxruntime-node": "1.21.1"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

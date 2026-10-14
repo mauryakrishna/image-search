@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  // Start loading the model on the server while the visitor picks an image.
+  useEffect(() => {
+    fetch("/api/warmup").catch(() => {});
+  }, []);
+
   const [preview, setPreview] = useState(null);
   const [fileName, setFileName] = useState("");
   const [busy, setBusy] = useState(false);
@@ -62,7 +67,7 @@ export default function Home() {
               {busy ? "Searching…" : "Upload & search"}
             </button>
           </div>
-          <p className="hint">{fileName || "JPEG, PNG, WebP or GIF, up to 10 MB"}</p>
+          <p className="hint">{fileName || "JPEG, PNG, WebP or GIF, up to 4 MB"}</p>
           {error && (
             <p className="error" role="alert">
               {error}
@@ -75,7 +80,7 @@ export default function Home() {
         <section className="results">
           <div className="card">
             <h2>Your image</h2>
-            <img className="query" src={`/uploads/${result.name}`} alt="The image you uploaded" />
+            <img className="query" src={result.url} alt="The image you uploaded" />
             <p className="note">
               {result.duplicate ? "Already in the library, so it wasn't stored again." : "Added to the library."}
             </p>
@@ -90,7 +95,7 @@ export default function Home() {
                   const pct = (s.similarity * 100).toFixed(1);
                   return (
                     <li key={s.name} className="thumb">
-                      <img src={`/uploads/${s.name}`} alt={`Similar image, ${pct}% match`} />
+                      <img src={s.url} alt={`Similar image, ${pct}% match`} />
                       <span className="score" aria-hidden="true">
                         {pct}%
                       </span>
